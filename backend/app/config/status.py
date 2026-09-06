@@ -1,0 +1,5 @@
+STATUS_PRONTO = "pronto"
+STATUS_PROCESSANDO = "processando"
+STATUS_CONCLUIDO = "concluido"
+STATUS_ERRO = "erro"
+STATUS_VALIDADO = "validado"
