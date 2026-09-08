@@ -1,19 +1,31 @@
 from app.models.download_response import DownloadResponse
 from app.models.video_info import VideoInfo
 from app.models.download_info import DownloadInfo
-from app.models.reel_download_response import (ReelDownloadResponse)
-from app.repositories.download_repository import salvar_download
+from app.models.reel_download_response import (
+    ReelDownloadResponse
+)
+
+from app.repositories.download_repository import (
+    salvar_download
+)
+
 from app.utils.url_utils import (
     validar_reel_completo
 )
 
 from app.config.status import (
     STATUS_PRONTO,
-    STATUS_CONCLUIDO,
     STATUS_VALIDADO,
     STATUS_ERRO
 )
+
+from app.services.instagram_service import (
+    baixar_video_do_token
+)
+
+
 def processar_download(url: str):
+
     if not url:
         return DownloadResponse(
             status=STATUS_ERRO,
@@ -55,13 +67,16 @@ def processar_download(url: str):
     )
 
 def iniciar_download(url: str):
+
     resultado = validar_reel_completo(url)
+
     if not resultado["valido"]:
         return ReelDownloadResponse(
             sucesso=False,
             codigo="",
             mensagem=resultado["erro"]
         )
+
     return ReelDownloadResponse(
         sucesso=True,
         codigo=resultado["codigo"],
