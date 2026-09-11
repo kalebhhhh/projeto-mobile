@@ -14,6 +14,14 @@ def obter_download_url(tiktok_url: str):
         page = browser.new_page()
 
         def capturar_resposta(response):
+            print(
+                "RESPONSE:",
+                response.url
+            )
+            print(
+                "STATUS:",
+                response.status
+            )
 
             if "/api/extract" in response.url:
 
@@ -22,6 +30,10 @@ def obter_download_url(tiktok_url: str):
                     dados = response.json()
 
                     resultado.update(dados)
+                    print(
+                        "JSON CAPTURADO:"
+                    )
+                    print(dados)
 
                 except Exception as erro:
 
