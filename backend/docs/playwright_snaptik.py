@@ -8,10 +8,19 @@ def obter_download_url(tiktok_url: str):
     with sync_playwright() as p:
 
         browser = p.chromium.launch(
-            headless=True
-        )
+    headless=True,
+    args=[
+        "--disable-blink-features=AutomationControlled"
+    ]
+)
 
-        page = browser.new_page()
+        page = browser.new_page(
+    user_agent=(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/139.0.0.0 Safari/537.36"
+    )
+)
 
         def capturar_resposta(response):
             print(
@@ -51,6 +60,15 @@ def obter_download_url(tiktok_url: str):
             "https://snaptik.app/pt3",
             wait_until="networkidle"
         )
+        page.add_init_script("""
+            Object.defineProperty(
+            navigator,
+            'webdriver',
+                    {
+                        get: () => undefined
+                   }
+               );
+        """)
 
         # Aceitar popup de cookies se existir
         try:
