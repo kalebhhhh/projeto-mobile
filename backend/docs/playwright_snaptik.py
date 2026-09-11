@@ -14,14 +14,34 @@ def obter_download_url(tiktok_url: str):
     ]
 )
 
-        page = browser.new_page(
-    user_agent=(
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/139.0.0.0 Safari/537.36"
-    )
-)
+        context = browser.new_context(
+                user_agent=(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/139.0.0.0 Safari/537.36"
+                ),
+                viewport={
+                    "width": 1366,
+                    "height": 768
+                },
+                locale="en-US"
+            )
 
+        page = context.new_page()
+        page.add_init_script("""
+                    Object.defineProperty(
+                    navigator,
+                    'webdriver',
+                            {
+                                get: () => undefined
+                           }
+                       );
+                """)
+        page.goto(
+                    "https://snaptik.app/pt3",
+                    wait_until="networkidle"
+                )
+        
         def capturar_resposta(response):
             print(
                 "RESPONSE:",
@@ -55,20 +75,6 @@ def obter_download_url(tiktok_url: str):
             "response",
             capturar_resposta
         )
-
-        page.goto(
-            "https://snaptik.app/pt3",
-            wait_until="networkidle"
-        )
-        page.add_init_script("""
-            Object.defineProperty(
-            navigator,
-            'webdriver',
-                    {
-                        get: () => undefined
-                   }
-               );
-        """)
 
         # Aceitar popup de cookies se existir
         try:
@@ -115,7 +121,7 @@ def obter_download_url(tiktok_url: str):
         )
 
         page.wait_for_timeout(
-            10000
+            20000
         )
         print(
          "URL ATUAL:",
