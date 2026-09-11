@@ -113,15 +113,28 @@ def obter_download_url(tiktok_url: str):
             "#url-input",
             tiktok_url
         )
+        print(
+         "VALOR INPUT:",
+         page.input_value("#url-input")
+        )
 
         page.locator(
             "#submit-btn"
-        ).click(
-            force=True
+        ).click()
+        print(
+            "BOTAO CLICADO"
         )
 
         page.wait_for_timeout(
             20000
+        )
+        print(
+            "HTML BOTAO:"
+        )
+        print(
+            page.locator(
+                "#submit-btn"
+            ).inner_html()
         )
         print("\n====================")
         print("TEXTO DA PAGINA")
