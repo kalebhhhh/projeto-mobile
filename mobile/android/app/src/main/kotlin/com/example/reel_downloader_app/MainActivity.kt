@@ -1,7 +1,9 @@
 package com.example.reel_downloader_app
 
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import io.flutter.embedding.android.FlutterActivity
@@ -15,6 +17,54 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL =
         "reel_downloader/downloads"
 
+    private var sharedText: String? = null
+
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
+
+        super.onCreate(
+            savedInstanceState
+        )
+
+        handleIntent(intent)
+    }
+
+    override fun onNewIntent(
+        intent: Intent
+    ) {
+
+        super.onNewIntent(intent)
+
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(
+        intent: Intent?
+    ) {
+
+        if (
+            intent?.action ==
+            Intent.ACTION_SEND
+        ) {
+
+            if (
+                intent.type ==
+                "text/plain"
+            ) {
+
+                sharedText =
+                    intent.getStringExtra(
+                        Intent.EXTRA_TEXT
+                    )
+
+                println(
+                    "URL COMPARTILHADA: $sharedText"
+                )
+            }
+        }
+    }
+
     override fun configureFlutterEngine(
         flutterEngine: FlutterEngine
     ) {
@@ -27,6 +77,20 @@ class MainActivity : FlutterActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             CHANNEL
         ).setMethodCallHandler { call, result ->
+
+            if (
+                call.method ==
+                "getSharedText"
+            ) {
+
+                result.success(
+                    sharedText
+                )
+
+                sharedText = null
+
+                return@setMethodCallHandler
+            }
 
             if (
                 call.method ==
@@ -79,6 +143,18 @@ class MainActivity : FlutterActivity() {
 
         val arquivo =
             File(caminho)
+
+        println(
+            "CAMINHO RECEBIDO: $caminho"
+        )
+
+        println(
+            "ARQUIVO EXISTE? ${arquivo.exists()}"
+        )
+
+        println(
+            "ARQUIVO TAMANHO: ${arquivo.length()}"
+        )
 
         val resolver =
             applicationContext

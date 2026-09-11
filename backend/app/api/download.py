@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-
+from app.services.tiktok_service import (
+    baixar_tiktok_por_url,
+)
 from app.models.video_request import VideoRequest
 
 from app.repositories.download_repository import (
@@ -23,6 +25,14 @@ from app.services.instagram_service import (
 
 router = APIRouter()
 
+
+@router.post("/tiktok/download-real")
+def tiktok_download_real(
+    video: VideoRequest
+):
+    return baixar_tiktok_por_url(
+        video.url
+    )
 
 @router.post("/reel/download-real")
 def reel_download_real(
