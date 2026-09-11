@@ -40,13 +40,48 @@ def obter_download_url(tiktok_url: str):
             wait_until="networkidle"
         )
 
+        # Aceitar popup de cookies se existir
+        try:
+
+            page.locator(
+                'button:has-text("Accept")'
+            ).click(
+                timeout=3000
+            )
+
+            print(
+                "Cookies aceitos"
+            )
+
+        except:
+
+            try:
+
+                page.locator(
+                    'button:has-text("Aceitar")'
+                ).click(
+                    timeout=3000
+                )
+
+                print(
+                    "Cookies aceitos"
+                )
+
+            except:
+
+                print(
+                    "Nenhum popup encontrado"
+                )
+
         page.fill(
             "#url-input",
             tiktok_url
         )
 
-        page.click(
+        page.locator(
             "#submit-btn"
+        ).click(
+            force=True
         )
 
         page.wait_for_timeout(
@@ -62,4 +97,8 @@ if __name__ == "__main__":
 
     resposta = obter_download_url(
         "https://www.tiktok.com/@filmes.dub/video/7651256969776401685"
+    )
+
+    print(
+        resposta
     )
