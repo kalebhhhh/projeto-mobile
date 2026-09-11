@@ -87,9 +87,13 @@ def obter_download_url(tiktok_url: str):
         page.wait_for_timeout(
             10000
         )
-
+        print(
+         "URL ATUAL:",
+            page.url
+        )
+        print("RESULTADO SNAPTIK:")
+        print(resultado)
         browser.close()
-
         return resultado
 
 
