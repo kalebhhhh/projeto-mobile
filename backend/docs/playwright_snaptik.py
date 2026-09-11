@@ -8,45 +8,44 @@ def obter_download_url(tiktok_url: str):
     with sync_playwright() as p:
 
         browser = p.chromium.launch(
-    headless=True,
-    args=[
-        "--disable-blink-features=AutomationControlled"
-    ]
-)
+            headless=True,
+            args=[
+                "--disable-blink-features=AutomationControlled"
+            ]
+        )
 
         context = browser.new_context(
-                user_agent=(
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/139.0.0.0 Safari/537.36"
-                ),
-                viewport={
-                    "width": 1366,
-                    "height": 768
-                },
-                locale="en-US"
-            )
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/139.0.0.0 Safari/537.36"
+            ),
+            viewport={
+                "width": 1366,
+                "height": 768
+            },
+            locale="en-US"
+        )
 
         page = context.new_page()
+
         page.add_init_script("""
-                    Object.defineProperty(
-                    navigator,
-                    'webdriver',
-                            {
-                                get: () => undefined
-                           }
-                       );
-                """)
-        page.goto(
-                    "https://snaptik.app/pt3",
-                    wait_until="networkidle"
-                )
-        
+        Object.defineProperty(
+            navigator,
+            'webdriver',
+            {
+                get: () => undefined
+            }
+        );
+        """)
+
         def capturar_resposta(response):
+
             print(
                 "RESPONSE:",
                 response.url
             )
+
             print(
                 "STATUS:",
                 response.status
@@ -58,11 +57,17 @@ def obter_download_url(tiktok_url: str):
 
                     dados = response.json()
 
-                    resultado.update(dados)
+                    resultado.update(
+                        dados
+                    )
+
                     print(
                         "JSON CAPTURADO:"
                     )
-                    print(dados)
+
+                    print(
+                        dados
+                    )
 
                 except Exception as erro:
 
@@ -76,7 +81,11 @@ def obter_download_url(tiktok_url: str):
             capturar_resposta
         )
 
-        # Aceitar popup de cookies se existir
+        page.goto(
+            "https://snaptik.app/pt3",
+            wait_until="networkidle"
+        )
+
         try:
 
             page.locator(
@@ -113,49 +122,99 @@ def obter_download_url(tiktok_url: str):
             "#url-input",
             tiktok_url
         )
+
         print(
-         "VALOR INPUT:",
-         page.input_value("#url-input")
+            "VALOR INPUT:",
+            page.input_value(
+                "#url-input"
+            )
         )
 
         page.locator(
-            "#submit-btn"
-        ).click()
+            "#url-input"
+        ).press(
+            "Enter"
+        )
+
         print(
-            "BOTAO CLICADO"
+            "ENTER ENVIADO"
         )
 
         page.wait_for_timeout(
             20000
         )
-        print(
-            "HTML BOTAO:"
-        )
-        print(
-            page.locator(
-                "#submit-btn"
-            ).inner_html()
-        )
+
+        try:
+
+            print(
+                "HTML BOTAO:"
+            )
+
+            print(
+                page.locator(
+                    "#submit-btn"
+                ).inner_html()
+            )
+
+        except Exception as erro:
+
+            print(
+                "ERRO BOTAO:",
+                erro
+            )
+
         print("\n====================")
         print("TEXTO DA PAGINA")
         print("====================")
+
         try:
-                print(
-                   page.locator("body").inner_text()
-              )
+
+            print(
+                page.locator(
+                    "body"
+                ).inner_text()
+            )
+
         except Exception as erro:
 
             print(
                 "ERRO AO CAPTURAR TEXTO:",
                 erro
             )
+
+        try:
+
+            page.screenshot(
+                path="snaptik_debug.png",
+                full_page=True
+            )
+
+            print(
+                "SCREENSHOT GERADO"
+            )
+
+        except Exception as erro:
+
+            print(
+                "ERRO SCREENSHOT:",
+                erro
+            )
+
         print(
-         "URL ATUAL:",
+            "URL ATUAL:",
             page.url
         )
-        print("RESULTADO SNAPTIK:")
-        print(resultado)
+
+        print(
+            "RESULTADO SNAPTIK:"
+        )
+
+        print(
+            resultado
+        )
+
         browser.close()
+
         return resultado
 
 
