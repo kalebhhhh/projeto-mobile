@@ -123,6 +123,19 @@ def obter_download_url(tiktok_url: str):
         page.wait_for_timeout(
             20000
         )
+        print("\n====================")
+        print("TEXTO DA PAGINA")
+        print("====================")
+        try:
+                print(
+                   page.locator("body").inner_text()
+              )
+        except Exception as erro:
+
+            print(
+                "ERRO AO CAPTURAR TEXTO:",
+                erro
+            )
         print(
          "URL ATUAL:",
             page.url
