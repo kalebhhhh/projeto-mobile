@@ -130,14 +130,24 @@ def obter_download_url(tiktok_url: str):
             )
         )
 
-        page.locator(
-            "#url-input"
-        ).press(
-            "Enter"
-        )
+        page.evaluate("""
+        const form = document.querySelector('form');
+
+        if (form) {
+            form.dispatchEvent(
+                new Event(
+                    'submit',
+                    {
+                        bubbles: true,
+                        cancelable: true
+                    }
+                )
+            );
+        }
+        """)
 
         print(
-            "ENTER ENVIADO"
+            "FORMULARIO SUBMETIDO"
         )
 
         page.wait_for_timeout(
